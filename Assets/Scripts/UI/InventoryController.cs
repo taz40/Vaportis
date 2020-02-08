@@ -22,6 +22,7 @@ public class InventoryController : MonoBehaviour{
     public GameObject SlotGameObject; //Prefab for slot gameobject
     public GameObject InventoryPanel; //The inventory's panel object
     public GameObject InventoryObject; //The root inventory object in the heirarchy
+    public Text WeightText; //The text gameobject to display the inventory weight
 
     private bool _isInventoryOpen = false;//True if inventory is open, false otherwise
     private Inventory _inventory; //The inventory data
@@ -71,8 +72,7 @@ public class InventoryController : MonoBehaviour{
 
         //TEMPORARY
         if (Input.GetButtonDown("Add")) {
-            ItemType type = (ItemType)Random.Range(0, 3);
-            _inventory.Add(new Slot(new Item(type)));
+            _inventory.Add(new Slot(Items.ItemPrefabs["wood"], 0, 10));
         }
         if (Input.GetButtonDown("Remove")) {
             _inventory.Remove(_inventory.Size-1);
@@ -106,9 +106,19 @@ public class InventoryController : MonoBehaviour{
         //register callbacks
         _inventory.RegisterOnSlotAdded(OnSlotAdded);
         _inventory.RegisterOnSlotRemoved(OnSlotRemoved);
-        ItemType type = (ItemType)Random.Range(0, 3);
-        _inventory.Add(new Slot(new Item(type)));
         //InitializeInventoryUI(_inventory.Size);
+        updateWeight();
+    }
+
+    private void updateWeight() {
+        WeightText.text = string.Format("Weight: \n{0:0.00}kg / {1:0.00}kg", _inventory.CurrentWeight, _inventory.CarryCapacity);
+        if (_inventory.CurrentWeight <= _inventory.CarryCapacity) {
+            WeightText.color = Color.black;
+        } else if (_inventory.CurrentWeight <= _inventory.CarryCapacity * 2) {
+            WeightText.color = Color.Lerp(Color.black, Color.red, _inventory.CurrentWeight / (_inventory.CarryCapacity * 2f));
+        } else {
+            WeightText.color = Color.red;
+        }
     }
 
     //--------------Callbacks-------------------
@@ -126,22 +136,17 @@ public class InventoryController : MonoBehaviour{
         GameObject go = Instantiate(SlotGameObject);
         go.transform.SetParent(InventoryPanel.transform);
         Image im = go.GetComponent<Image>();
-        Color color = Color.white;
-        switch (slot.Item.Type) {
-            case ItemType.Red:
-                color = Color.red;
-                break;
-            case ItemType.Blue:
-                color = Color.blue;
-                break;
-            case ItemType.Green:
-                color = Color.green;
-                break;
-        }
+        Color color = slot.Item.UIColor;
         im.color = color;
         go.GetComponent<Button>().onClick.AddListener(() => { OnSlotClick(slot); });
         _slotDictionary.Add(slot, go);
         slot.RegisterOnSlotModified(OnSlotModified);
+        updateWeight();
+        if (slot.Item.IsResource) {
+            go.GetComponentInChildren<Text>().text = string.Format("{0:0.00}kg", slot.Weight);
+        } else { 
+            go.GetComponentInChildren<Text>().text = string.Format("{0}", slot.Count);
+        }
     }
 
     /*
@@ -156,6 +161,7 @@ public class InventoryController : MonoBehaviour{
     public void OnSlotRemoved(Slot slot) {
         Destroy(_slotDictionary[slot]);
         _slotDictionary.Remove(slot);
+        updateWeight();
     }
 
     /*
@@ -170,19 +176,14 @@ public class InventoryController : MonoBehaviour{
     public void OnSlotModified(Slot slot) {
         GameObject go = _slotDictionary[slot];
         Image im = go.GetComponent<Image>();
-        Color color = Color.white;
-        switch (slot.Item.Type) {
-            case ItemType.Red:
-                color = Color.red;
-                break;
-            case ItemType.Blue:
-                color = Color.blue;
-                break;
-            case ItemType.Green:
-                color = Color.green;
-                break;
-        }
+        Color color = slot.Item.UIColor;
         im.color = color;
+        updateWeight();
+        if (slot.Item.IsResource) {
+            go.GetComponentInChildren<Text>().text = string.Format("{0:0.00}kg", slot.Weight);
+        } else {
+            go.GetComponentInChildren<Text>().text = string.Format("{0}", slot.Count);
+        }
     }
 
     /*
@@ -195,19 +196,20 @@ public class InventoryController : MonoBehaviour{
      * 
      */
     public void OnSlotClick(Slot slot) {
-        ItemType type = ItemType.Red;
         switch (slot.Item.Type) {
-            case ItemType.Red:
-                type = ItemType.Blue;
+            case ItemType.Wood:
+                slot.setItem(Items.ItemPrefabs["stone"], 0, 10);
                 break;
-            case ItemType.Blue:
-                type = ItemType.Green;
+            case ItemType.Stone:
+                slot.setItem(Items.ItemPrefabs["brick"], 10);
                 break;
-            case ItemType.Green:
-                type = ItemType.Red;
+            case ItemType.Brick:
+                slot.setItem(Items.ItemPrefabs["plank"], 10);
+                break;
+            case ItemType.Plank:
+                slot.setItem(Items.ItemPrefabs["wood"], 0, 10);
                 break;
         }
-        slot.Item = new Item(type);
     }
 
 }

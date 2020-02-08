@@ -67,23 +67,32 @@ public class Slot {
     }
 
     public Slot(Item item, int count = 1, int weight = 0){
-        _item = item;
-        _count = count;
-        _weight = weight;
+        setItem(item, count, weight);
     }
 
-    //---------------Callback Functions---------------------
+    public void setItem(Item item, int count = 1, int weight = 0){
+        Item = item;
+        Count = count;
+        Weight = weight;
+        if (item.IsResource) {
+            Count = 0;
+        } else {
+            Weight = item.WeightPerItem * count;
+        }
+    }
 
-    /*
-     * Function: RegisterOnSlotModified
-     * Params: 
-     *   cb: the callback to register
-     * Returns: None
-     * 
-     * Registers cb to the callback, so it will fire.
-     * 
-     */
-    public void RegisterOnSlotModified(Action<Slot> cb) {
+//---------------Callback Functions---------------------
+
+/*
+ * Function: RegisterOnSlotModified
+ * Params: 
+ *   cb: the callback to register
+ * Returns: None
+ * 
+ * Registers cb to the callback, so it will fire.
+ * 
+ */
+public void RegisterOnSlotModified(Action<Slot> cb) {
         _onSlotChangedAction += cb;
     }
 
