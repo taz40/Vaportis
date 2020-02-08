@@ -64,6 +64,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Data\Inventory.cs" />
+    <Compile Include="Assets\Scripts\Data\Item.cs" />
+    <Compile Include="Assets\Scripts\Data\Slot.cs" />
     <Compile Include="Assets\Scripts\UI\InventoryController.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>F:/code/Defiant Genesis/Vaportis/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
