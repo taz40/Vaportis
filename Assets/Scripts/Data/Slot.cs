@@ -66,19 +66,14 @@ public class Slot {
     public Slot() {
     }
 
-    public Slot(Item item, int count = 1, int weight = 0){
-        setItem(item, count, weight);
+    public Slot(Item item, int count = 1){
+        setItem(item, count);
     }
 
-    public void setItem(Item item, int count = 1, int weight = 0){
+    public void setItem(Item item, int count = 1){
         Item = item;
         Count = count;
-        Weight = weight;
-        if (item.IsResource) {
-            Count = 0;
-        } else {
-            Weight = item.WeightPerItem * count;
-        }
+        Weight = item.WeightPerItem * count;
     }
 
 //---------------Callback Functions---------------------
