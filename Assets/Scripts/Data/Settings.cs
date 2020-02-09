@@ -1,14 +1,21 @@
-﻿using System.Collections;
+﻿/* Filename: Settings.cs
+ * Author: Caleb
+ */
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/* Settings Class.
+ * 
+ * Used by the options menu to change settings.
+ */
 public class Settings: MonoBehaviour
 {
-    public Dropdown GraphicsDropdown;
-    public Dropdown ResolutionsDropdown;
+    public Dropdown GraphicsDropdown; //Dropdown menu for graphics.
+    public Dropdown ResolutionsDropdown; //Dropdown menu for resolutions.
 
-    public Toggle FullscreenToggle;
+    public Toggle FullscreenToggle; //Fullscreen button.
 
     private Resolution[] _resolutions;
 
@@ -38,16 +45,43 @@ public class Settings: MonoBehaviour
         ResolutionsDropdown.value = currentResolution;
     }
 
+    /* Function: SetQuality
+     * 
+     * Args:
+     *  int quality: the quality level to set to.
+     *  
+     * Returns: Nothing
+     * 
+     * Changes the graphics quality.
+     */
     public void SetQuality(int quality)
     {
         QualitySettings.SetQualityLevel(quality);
     }
 
+    /* Function: LoadMenu
+     * 
+     * Args:
+     *  bool isFullscreen: whether to set it to fullscreen or windowed.
+     *  
+     * Returns: Nothing 
+     * 
+     * Toggles fullscreen.
+     */
     public void SetFullscreen(bool isFullscreen)
     {
         Screen.fullScreen = isFullscreen;
     }
 
+    /* Function: SetResolution
+     * 
+     * Args:
+     *  int index: the index of the resolution in the _resolutions list.
+     *  
+     * Returns: Nothing 
+     * 
+     * Changes the resolution.
+     */
     public void SetResolution(int index)
     {
         Resolution resolution = _resolutions[index];
