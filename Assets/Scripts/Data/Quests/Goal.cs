@@ -1,42 +1,39 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Goal : MonoBehaviour
 {
-    public Text goalText;
-
     public int amountRequired = 1; //Amount of times the task must be completed. Set to 1 if it is a boolean task.
     public string Description = ""; //Description of goal.
 
-    [HideInInspector]
-    public bool isComplete = false;
+    [HideInInspector] public bool isComplete = false;
+    [HideInInspector] public Quest ParentQuest;
 
-    private int amountCompleted = 0;
+    private int _amountCompleted = 0;
 
     void Start()
     {
         if (amountRequired > 1)
             Description += " 0/" + amountRequired;
 
-        goalText.text = Description;
+        ParentQuest.Update();
     }
 
     public void Complete()
     {
-        if (isComplete) return;
+        if (isComplete || !ParentQuest.IsActive) return;
 
-        amountCompleted++;
+        _amountCompleted++;
         if (amountRequired > 1)
-            Description = Description.Substring(0, Description.Length - 3) + amountCompleted + "/" + amountRequired;
+            Description = Description.Substring(0, Description.Length - 3) + _amountCompleted + "/" + amountRequired;
 
-        if (amountCompleted == amountRequired) {
+        if (_amountCompleted == amountRequired) {
             isComplete = true;
             Description = StrikeThrough(Description);
         }
 
-        goalText.text = Description;
+        ParentQuest.Update();
     }
 
     string StrikeThrough(string s)
