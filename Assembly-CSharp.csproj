@@ -58,6 +58,9 @@
      <Compile Include="Assets\Scripts\Data\Inventory.cs" />
      <Compile Include="Assets\Scripts\Data\Item.cs" />
      <Compile Include="Assets\Scripts\Data\Items.cs" />
+     <Compile Include="Assets\Scripts\Data\Quests\Goal.cs" />
+     <Compile Include="Assets\Scripts\Data\Quests\Quest.cs" />
+     <Compile Include="Assets\Scripts\Data\Quests\Quests.cs" />
      <Compile Include="Assets\Scripts\Data\Settings.cs" />
      <Compile Include="Assets\Scripts\Data\Slot.cs" />
      <Compile Include="Assets\Scripts\Loading\LoadingScene.cs" />
