@@ -17,12 +17,12 @@ public class Goal : MonoBehaviour
         if (amountRequired > 1)
             Description += " 0/" + amountRequired;
 
-        ParentQuest.Update();
+        if (ParentQuest != null) ParentQuest.Update();
     }
 
     public void Complete()
     {
-        if (isComplete || !ParentQuest.IsActive) return;
+        if (isComplete || ParentQuest == null) return;
 
         _amountCompleted++;
         if (amountRequired > 1)

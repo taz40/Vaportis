@@ -1,14 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Quest : MonoBehaviour
 {
-    public Text GoalText;
     public List<Goal> Goals; //List of subgoals for quest.
     public string Description; //Description of the quest.
-    public Quest NextQuest = null; //Quest to add once this is completed.
+    public Quest[] NextQuests; //Quest to add once this is completed.
+    public Quests QuestManager;
     public bool IsActive; //Should the quest be added when the scene starts?
 
     [HideInInspector] public string CurrentDescription;
@@ -22,6 +21,7 @@ public class Quest : MonoBehaviour
     public void StartQuest()
     {
         IsActive = true;
+        Quests.QuestsList.Add(this);
 
         foreach (Goal goal in Goals)
         {
@@ -55,11 +55,14 @@ public class Quest : MonoBehaviour
         if (completed)
         {
             isComplete = true;
-            GoalText.text = "";
-            if (NextQuest != null) NextQuest.StartQuest();
+            Quests.QuestsList.Remove(this);
+            if (NextQuests.Length != 0)
+                foreach (Quest quest in NextQuests)
+                {
+                    quest.StartQuest();
+                }
             Destroy(gameObject);
-            return;
         }
-        GoalText.text = CurrentDescription;
+        QuestManager.Update();
     }
 }
