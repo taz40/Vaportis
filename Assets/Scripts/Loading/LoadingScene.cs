@@ -21,6 +21,7 @@ public class LoadingScene : MonoBehaviour
     {
         //Start a routine without freezing the scene.
         StartCoroutine(loadAsynchronously());
+        
     }
 
     IEnumerator loadAsynchronously()

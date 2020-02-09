@@ -1,6 +1,11 @@
 ﻿
+<<<<<<< HEAD
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
+=======
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 16
+>>>>>>> f3050e48e80502713d0e3b39011e70e5353fdd6f
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{99EC02DC-B92F-EBEC-1C52-2A4F6B911C92}"
 EndProject
 Global
