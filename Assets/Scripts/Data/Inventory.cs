@@ -62,6 +62,21 @@ public class Inventory {
      * 
      */
     public void Add(Slot slot) {
+        foreach (Slot slot1 in _slots) {
+            if (slot1.Item == slot.Item) {
+                slot1.Count += slot.Count;
+                slot1.Weight += slot.Weight;
+                CurrentWeight += slot.Weight;
+                if (CurrentWeight <= CarryCapacity) {
+                    EncomberanceMul = 1.0f;
+                } else if (CurrentWeight <= CarryCapacity * 2) {
+                    EncomberanceMul = Mathf.Lerp(1, 0, (CurrentWeight - CarryCapacity) / (CarryCapacity));
+                } else {
+                    EncomberanceMul = 0;
+                }
+                return;
+            }
+        }
         _slots.Add(slot);
         CurrentWeight += slot.Weight;
         slot.RegisterOnSlotModified(OnSlotModified);
@@ -87,43 +102,28 @@ public class Inventory {
      * 
      */
     public void Remove(Slot slot) {
-        _slots.Remove(slot);
-        CurrentWeight -= slot.Weight;
-        if (CurrentWeight <= CarryCapacity) {
-            EncomberanceMul = 1.0f;
-        } else if (CurrentWeight <= CarryCapacity * 2) {
-            EncomberanceMul = Mathf.Lerp(1, 0, CurrentWeight / (CarryCapacity * 2f));
-        } else {
-            EncomberanceMul = 0;
+        foreach (Slot slot1 in _slots) {
+            if (slot1.Item == slot.Item) {
+                if (slot.Count > slot1.Count)
+                    slot.setItem(slot1.Item, slot1.Count);
+                slot1.Count -= slot.Count;
+                slot1.Weight -= slot.Weight;
+                if (slot1.Count == 0) {
+                    _slots.Remove(slot1);
+                    if (_removeSlotAction != null)
+                        _removeSlotAction(slot1);
+                }
+                if (CurrentWeight <= CarryCapacity) {
+                    EncomberanceMul = 1.0f;
+                } else if (CurrentWeight <= CarryCapacity * 2) {
+                    EncomberanceMul = Mathf.Lerp(1, 0, (CurrentWeight - CarryCapacity) / (CarryCapacity));
+                } else {
+                    EncomberanceMul = 0;
+                }
+                return;
+            }
         }
-        if (_removeSlotAction != null)
-            _removeSlotAction(slot);
     }
-
-    /*
-     * Function: Remove
-     * Params: 
-     *   index: the index of the slot data to remove from the inventory.
-     * Returns: None
-     * 
-     * Removes the slot from the inventory, then calls the callback to notify UI.
-     * 
-     */
-    public void Remove(int index) {
-        CurrentWeight -= _slots[index].Weight;
-        if (CurrentWeight <= CarryCapacity) {
-            EncomberanceMul = 1.0f;
-        } else if (CurrentWeight <= CarryCapacity * 2) {
-            EncomberanceMul = Mathf.Lerp(1, 0, CurrentWeight / (CarryCapacity * 2f));
-        } else {
-            EncomberanceMul = 0;
-        }
-        if (_removeSlotAction != null)
-            _removeSlotAction(_slots[index]);
-        _slots.RemoveAt(index);
-
-    }
-
 
 
     //-----------Callback register and unregister------------------------
@@ -200,7 +200,7 @@ public class Inventory {
         if (CurrentWeight <= CarryCapacity) {
             EncomberanceMul = 1.0f;
         } else if (CurrentWeight <= CarryCapacity * 2) {
-            EncomberanceMul = Mathf.Lerp(1, 0, CurrentWeight / (CarryCapacity * 2f));
+            EncomberanceMul = Mathf.Lerp(1, 0, (CurrentWeight - CarryCapacity) / (CarryCapacity));
         } else {
             EncomberanceMul = 0;
         }

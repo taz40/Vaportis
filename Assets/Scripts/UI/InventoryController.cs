@@ -68,15 +68,6 @@ public class InventoryController : MonoBehaviour{
             }
             _isInventoryOpen = !_isInventoryOpen;
         }
-
-
-        //TEMPORARY
-        if (Input.GetButtonDown("Add")) {
-            _inventory.Add(new Slot(Items.ItemPrefabs["wood"], 0, 10));
-        }
-        if (Input.GetButtonDown("Remove")) {
-            _inventory.Remove(_inventory.Size-1);
-        }
     }
 
     private void openInventory() {
@@ -115,7 +106,7 @@ public class InventoryController : MonoBehaviour{
         if (_inventory.CurrentWeight <= _inventory.CarryCapacity) {
             WeightText.color = Color.black;
         } else if (_inventory.CurrentWeight <= _inventory.CarryCapacity * 2) {
-            WeightText.color = Color.Lerp(Color.black, Color.red, _inventory.CurrentWeight / (_inventory.CarryCapacity * 2f));
+            WeightText.color = Color.Lerp(Color.black, Color.red, (_inventory.CurrentWeight-_inventory.CarryCapacity) / (_inventory.CarryCapacity));
         } else {
             WeightText.color = Color.red;
         }
@@ -136,17 +127,12 @@ public class InventoryController : MonoBehaviour{
         GameObject go = Instantiate(SlotGameObject);
         go.transform.SetParent(InventoryPanel.transform);
         Image im = go.GetComponent<Image>();
-        Color color = slot.Item.UIColor;
-        im.color = color;
+        im.sprite = slot.Item.UISprite;
         go.GetComponent<Button>().onClick.AddListener(() => { OnSlotClick(slot); });
         _slotDictionary.Add(slot, go);
         slot.RegisterOnSlotModified(OnSlotModified);
         updateWeight();
-        if (slot.Item.IsResource) {
-            go.GetComponentInChildren<Text>().text = string.Format("{0:0.00}kg", slot.Weight);
-        } else { 
-            go.GetComponentInChildren<Text>().text = string.Format("{0}", slot.Count);
-        }
+        go.GetComponentInChildren<Text>().text = string.Format("{0}", slot.Count);
     }
 
     /*
@@ -176,14 +162,9 @@ public class InventoryController : MonoBehaviour{
     public void OnSlotModified(Slot slot) {
         GameObject go = _slotDictionary[slot];
         Image im = go.GetComponent<Image>();
-        Color color = slot.Item.UIColor;
-        im.color = color;
+        im.sprite = slot.Item.UISprite;
         updateWeight();
-        if (slot.Item.IsResource) {
-            go.GetComponentInChildren<Text>().text = string.Format("{0:0.00}kg", slot.Weight);
-        } else {
-            go.GetComponentInChildren<Text>().text = string.Format("{0}", slot.Count);
-        }
+        go.GetComponentInChildren<Text>().text = string.Format("{0}", slot.Count);
     }
 
     /*
@@ -196,20 +177,7 @@ public class InventoryController : MonoBehaviour{
      * 
      */
     public void OnSlotClick(Slot slot) {
-        switch (slot.Item.Type) {
-            case ItemType.Wood:
-                slot.setItem(Items.ItemPrefabs["stone"], 0, 10);
-                break;
-            case ItemType.Stone:
-                slot.setItem(Items.ItemPrefabs["brick"], 10);
-                break;
-            case ItemType.Brick:
-                slot.setItem(Items.ItemPrefabs["plank"], 10);
-                break;
-            case ItemType.Plank:
-                slot.setItem(Items.ItemPrefabs["wood"], 0, 10);
-                break;
-        }
+        
     }
 
 }
