@@ -31,6 +31,20 @@ public class SceneLoader : MonoBehaviour
         SceneManager.LoadScene(_LOADING_SCREEN);
     }
 
+    /* Function: LoadMenu
+     * 
+     * Args:
+     *  int sceneIndex: the index of the scene to load.
+     *  
+     * Returns: Nothing 
+     * 
+     * Loads the appropriate menu.
+     */
+    public void LoadMenu(int sceneIndex)
+    {
+        SceneManager.LoadScene(sceneIndex);
+    }
+
     /* Function: Quit
      * 
      * Returns: Nothing
